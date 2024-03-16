@@ -1,8 +1,9 @@
 import { useState } from 'react';
-import styles from './ContactForm.module.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { getContacts } from '../../store/selectors';
 import { addContact } from 'store/thunks';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
+import styles from './ContactForm.module.css';
 
 const ContactForm = () => {
   const [contact, setContact] = useState({ name: '', number: '' });
@@ -20,16 +21,17 @@ const ContactForm = () => {
     e.preventDefault();
     const newContact = { name, number };
     contacts.find(contact => contact.name.toLowerCase() === name.toLowerCase())
-      ? alert(`${name} is already in contacts`)
-      : dispatch(addContact(newContact)).then(() => {
-        alert('New contact added')
-      }).catch(() => {
-        alert('ERROR')
-      })
+      ? Notify.info(`${name} is already in contacts`)
+      : dispatch(addContact(newContact))
+          .unwrap()
+          .then(() => {
+            Notify.success('New contact added');
+          })
+          .catch(() => {
+            Notify.failure('OOPS some error');
+          });
     resetForm();
   };
-
-
 
   const resetForm = () => {
     setContact({ name: '', number: '' });

@@ -3,9 +3,10 @@ export const handelPending = state => {
   state.error = '';
 };
 
-export const handelRejected = (state, { error }) => {
+export const handelRejected = (state, { payload }) => {
+  console.log('DEBAGe', payload)
   state.isLoading = false;
-  state.error = error.message;
+  state.error = payload.message;
 };
 
 export const handelGetContactsFulfilled = (state, { payload }) => {
